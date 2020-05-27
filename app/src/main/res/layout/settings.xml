@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+>
+    <TextView
+        android:id="@+id/setting_header_general"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
+        android:text="General"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/setting_label_userAgent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/setting_header_general"
+        android:text="User Agent"
+        android:textSize="14sp"/>
+
+    <EditText
+        android:id="@+id/setting_field_userAgent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/setting_label_userAgent"
+        android:ems="10"
+        android:inputType="textMultiLine"/>
+
+    <Button
+        android:id="@+id/restore_userAgent_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setting_label_userAgent"
+        android:layout_toEndOf="@+id/setting_field_userAgent"
+        android:layout_toRightOf="@+id/setting_field_userAgent"
+        android:text="Restore default"/>
+
+</RelativeLayout>

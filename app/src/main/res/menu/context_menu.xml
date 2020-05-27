@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <app:item android:id="@+id/action_copy_url_to_clipboard"
+          android:title="@string/action_copy_url_to_clipboard" />
+    <app:item android:id="@+id/action_share_link"
+          android:title="@string/action_share_link"
+          app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"
+    />
+    <app:item android:id="@+id/action_open_link_in_new_tab"
+        android:title="@string/action_open_link_in_new_tab"
+     />
+    <!--
+    <item android:id="@+id/action_copy_link_text_to_clipboard"
+          android:title="kopioi teksti leikepöydälle" />
+    -->
+</menu>

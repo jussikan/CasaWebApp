@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="permitted_hostnames">
+        <item>192.168.1.101</item>
+<!--        <item>google.fi</item>-->
+        <item>youtube.com</item>
+        <item>facebook.com</item>
+    </string-array>
+</resources>

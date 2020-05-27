@@ -1,0 +1,14 @@
+<resources>
+    <!--<string name="app_name">%{APP_NAME}</string>-->
+    <string name="app_name">Casabook</string>
+    <!--<string name="url">%{URL}</string>-->
+
+    <!-- to be a placeholder -->
+<!--    <string name="url">https://www.facebook.com/</string>-->
+    <string name="url">http://192.168.1.101/</string>
+    <string name="domain">facebook.com</string> <!-- to be a placeholder -->
+    <string name="action_copy_url_to_clipboard">Copy URL to clipboard</string>
+    <string name="action_share_link">Share URL to another app</string>
+    <string name="action_open_link_in_new_tab">Open link in new tab</string>
+    <string name="link_contains_an_unallowed_url">Link URL not allowed</string>
+</resources>

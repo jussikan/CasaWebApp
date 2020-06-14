@@ -81,7 +81,6 @@ public class ScreenshotTask {
     public void handleCaptureState(final int state) {
         final int outState;
 
-        // Converts the decode state to the overall state.
         switch(state) {
             case ScreenshotManager.STATE_CAPTURE_STARTED:
                 outState = ScreenshotManager.STATE_CAPTURE_STARTED;
@@ -94,14 +93,12 @@ public class ScreenshotTask {
                 break;
         }
 
-        // Calls the generalized state method
         handleState(outState);
     }
 
     public void handleCropState(final int state) {
         final int outState;
 
-        // Converts the decode state to the overall state.
         switch(state) {
             case ScreenshotManager.STATE_CAPTURE_STARTED:
                 outState = ScreenshotManager.STATE_CAPTURE_STARTED;
@@ -121,11 +118,9 @@ public class ScreenshotTask {
                 break;
         }
 
-        // Calls the generalized state method
         handleState(outState);
     }
 
-    // Passes the state to PhotoManager
     public void handleState(final int state) {
         /*
          * Passes a handle to this task and the

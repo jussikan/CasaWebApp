@@ -3,14 +3,11 @@ package fi.casa.webapp;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,10 +16,10 @@ import java.util.function.Consumer;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
+import fi.casa.webapp.mocks.MockWebView;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -33,7 +30,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withChild;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static fi.casa.webapp.MainActivity.TAG;
-import static fi.casa.webapp.ViewMatchers.isRefreshing;
+import static fi.casa.webapp.tools.ViewMatchers.isRefreshing;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 
@@ -41,9 +38,6 @@ import static org.hamcrest.Matchers.instanceOf;
 @LargeTest
 public class TestsWithMockedWebView {
     private WebView ewv = null;
-
-//    @Rule
-//    public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
     private ActivityScenario<MainActivity> scenario = null;
 
@@ -63,14 +57,11 @@ public class TestsWithMockedWebView {
         ((CasaWebAppApplication) activity.getApplication()).setWebView(nwv);
 
         final SwipeRefreshLayout esrl = (SwipeRefreshLayout) content.getChildAt(0);
-//        ewv = (WebView) esrl.findViewById(R.id.webview);
         final ViewGroup wvc = esrl.findViewById(R.id.webview_container);
         ewv = (WebView) wvc.getChildAt(0);
 
         esrl.removeView(ewv);
         esrl.addView(nwv);
-
-//        nwv.setId(R.id.webview);
     }
 
     private void putMockWebViewIntoPlace() {

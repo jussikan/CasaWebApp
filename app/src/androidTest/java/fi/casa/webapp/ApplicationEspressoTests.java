@@ -5,13 +5,11 @@ import android.content.ClipboardManager;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebView;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +26,6 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.action.CoordinatesProvider;
 import androidx.test.espresso.action.GeneralClickAction;
 import androidx.test.espresso.action.Press;
 import androidx.test.espresso.action.Tap;
@@ -129,7 +126,6 @@ public class ApplicationEspressoTests {
 
     @Before
     public void setUp() {
-//        CasaWebAppApplication app = (CasaWebAppApplication) getInstrumentation().getTargetContext().getApplicationContext();
         final CasaWebAppApplication app = getApplication();
 
         try {
@@ -197,7 +193,7 @@ public class ApplicationEspressoTests {
         onWebView().withElement(findElement(Locator.ID, "deviceType"))
                 .check(webMatches(getText(), containsString("mobile")));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -206,7 +202,7 @@ public class ApplicationEspressoTests {
         onView(withText("Desktop/Mobile")).perform(click());
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -216,62 +212,6 @@ public class ApplicationEspressoTests {
         onWebView().withElement(findElement(Locator.ID, "deviceType"))
                 .check(webMatches(getText(), containsString("desktop")));
     }
-
-
-//    public enum MockPageLinkPosition implements CoordinatesProvider {
-//        ALINK1 {
-//            @Override
-//            public float[] calculateCoordinates(View view) {
-//                final int[] location = new int[2];
-//                view.getLocationOnScreen(location);
-//
-//                final float[] coordinates = {
-//                    location[0] + 1,
-//                    location[1] + 1
-//                };
-//                return coordinates;
-//            }
-//        },
-//        ALINK2 {
-//            @Override
-//            public float[] calculateCoordinates(View view) {
-//                final int[] location = new int[2];
-//                view.getLocationOnScreen(location);
-//
-//                final float[] coordinates = {
-//                    location[0] + 1,
-//                    location[1] + 21
-//                };
-//                return coordinates;
-//            }
-//        },
-//        FLINK1 {
-//            @Override
-//            public float[] calculateCoordinates(View view) {
-//                final int[] location = new int[2];
-//                view.getLocationOnScreen(location);
-//
-//                final float[] coordinates = {
-//                    location[0] + 1,
-//                    location[1] + 41
-//                };
-//                return coordinates;
-//            }
-//        },
-//        TARGET {
-//            @Override
-//            public float[] calculateCoordinates(View view) {
-//                final int[] location = new int[2];
-//                view.getLocationOnScreen(location);
-//
-//                float[] coordinates = {
-//                    location[0] + 1,
-//                    location[1] + 1
-//                };
-//                return coordinates;
-//            }
-//        }
-//    }
 
     protected ClipboardManager getClipboardManager() {
         return (ClipboardManager) getInstrumentation()
@@ -432,7 +372,7 @@ public class ApplicationEspressoTests {
         ));
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -440,7 +380,7 @@ public class ApplicationEspressoTests {
 
         try {
             /* NOTE maybe better would be to wait until onPageFinished() in WebView has ran .. twice. */
-            Thread.sleep(2000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -476,7 +416,7 @@ public class ApplicationEspressoTests {
         );
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -502,7 +442,7 @@ public class ApplicationEspressoTests {
         onView(withText("Share")).perform(click());
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -587,13 +527,6 @@ public class ApplicationEspressoTests {
         assertIsAtMainView();
         assertWebViewIsDisplayed();
     }
-
-//    final EditText titleInput = (EditText) activity.findViewById(R.id.titleInput);
-//    getInstrumentation().runOnMainSync(new Runnable() {
-//        public void run() {
-//            titleInput.setText("Engineer");
-//        }
-//    });
 
     /**
      * go to settings

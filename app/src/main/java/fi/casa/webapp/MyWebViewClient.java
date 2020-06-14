@@ -1,8 +1,6 @@
 package fi.casa.webapp;
 
 import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -11,16 +9,11 @@ public class MyWebViewClient extends WebViewClient {
     private MainActivity activity = null;
     private Firewall firewall = null;
     private boolean wasCommitCalled = false;
-//    private Consumer onForbiddenHostnameRequestCallback;
 
     public MyWebViewClient(final MainActivity activity, final Firewall firewall) {
         this.activity = activity;
         this.firewall = firewall;
     }
-
-//    public void setOnForbiddenHostnameRequestInformer(Consumer callback) {
-//        this.onForbiddenHostnameRequestCallback = callback;
-//    }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView webView, String url) {
@@ -60,19 +53,6 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView webView, String url) {
         super.onPageFinished(webView, url);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            new Handler().postDelayed(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    if (!wasCommitCalled) {
-//                        webView.loadUrl(url);
-//                    }
-//                }
-//            }, 2500);
-//        }
-
         activity.onPageFinished(webView, url);
     }
 }

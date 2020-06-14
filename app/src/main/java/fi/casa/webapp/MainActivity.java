@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -30,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -50,9 +50,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import im.delight.android.webview.AdvancedWebView;
 
-public class MainActivity extends AppCompatActivity
-//    implements AdvancedWebView.Listener
-{
+public class MainActivity extends AppCompatActivity {
     final MainActivity self = this;
     public static final String TAG = "MainActivity";
     private MyRecyclerViewAdapter recyclerViewAdapter;
@@ -61,19 +59,14 @@ public class MainActivity extends AppCompatActivity
 
     protected URL url;
 
-    String domain;
-
-//    protected final List<String> mPermittedHostnames = new LinkedList<String>();
     protected Firewall firewall = null;
     private MyWebViewClient myWebViewClient;
 
     private Fragment fragment = null;
 
-    protected WebView mWebView;
-
     private String focusedUrl = null;
     final String desktopUserAgent = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
-    String mobileUserAgent;
+    private String mobileUserAgent;
     boolean desktopMode = false;
     private SwipeRefreshLayout swipeRefresh = null;
     private ShareActionProvider mShareActionProvider = null;
@@ -81,9 +74,10 @@ public class MainActivity extends AppCompatActivity
     final private MainActivity mainActivity = this;
     private FrameLayout webviewContainer;
     private Button addWebView;
+    private Button buttonTabs;
     private WebView focusedWebView;
-    AppCompatButton buttonBack;
-    AppCompatButton buttonForward = null;
+    private AppCompatButton buttonBack;
+    private AppCompatButton buttonForward = null;
 
     private List<WebViewCollector> webViewCollectors = new ArrayList<>();
     private List<WebView> webViews = new LinkedList<>();
@@ -94,25 +88,20 @@ public class MainActivity extends AppCompatActivity
             FrameLayout.LayoutParams.MATCH_PARENT
     );
 
+    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            Log.i(TAG, "at handleOnBackPressed");
+        }
+    };
 
     public MainActivity() {
-    }
-
-    private void fillPermittedHostnames(String[] phn) {
-//        for (String s : phn) {
-//            mPermittedHostnames.add(s);
-//        }
-//        ((AdvancedWebView) webView).addPermittedHostname(h);
     }
 
     public static String getApplicationName(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
-    }
-
-    public String getFocusedUrl() {
-        return focusedUrl;
     }
 
     public void setFocusedUrl(String focusedUrl) {
@@ -143,17 +132,6 @@ public class MainActivity extends AppCompatActivity
 
         final String restOfUrl = url.replaceFirst(helper.getProtocol() +"s?:\\/\\/", "");
         return restOfUrl;
-    }
-
-    protected String pickHostFromUrl(final String url) {
-        final Matcher domainMatcher = ptrnExtractExternalUrl.matcher(url);
-
-        final boolean matches = domainMatcher.matches();
-        final String host = matches
-            ? domainMatcher.group(1)
-            : null
-        ;
-        return host;
     }
 
     protected static String pickURLAfterBaseURL(final String url) {
@@ -194,39 +172,6 @@ public class MainActivity extends AppCompatActivity
         return domainInRestOfUrl;
     }
 
-    /* TODO some unit tests would be good for this */
-//    protected boolean isHostnameAllowed(final String url) {
-//        /* if the permitted hostnames have not been restricted to a specific set */
-//        if (mPermittedHostnames.size() == 0) {
-//            /* all hostnames are allowed */
-//            return true;
-//        }
-//
-//        /* get the actual hostname of the URL that is to be checked */
-//        final String actualHost = Uri.parse(url).getHost();
-//        Log.i(TAG, "actualHost: "+ actualHost);
-//
-//        String decodedUrl = null;
-//        try {
-//            decodedUrl = URLDecoder.decode(url, "UTF-8");
-//            Log.i(TAG, "decodedUrl: "+ decodedUrl);
-//        }
-//        catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-////            return false;
-//        }
-//
-//        for (String expectedHost : mPermittedHostnames) {
-//            /* if the two hostnames match or if the actual host is a subdomain of the expected host */
-//            if (actualHost.equals(expectedHost) || actualHost.endsWith("."+ expectedHost)) {
-//                /* the actual hostname of the URL to be checked is allowed */
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
     protected void setDesktopMode(final WebView webView, final boolean enabled) {
         desktopMode = enabled;
 
@@ -263,12 +208,6 @@ public class MainActivity extends AppCompatActivity
         return wv;
     }
 
-//    protected String readDomain() {
-//        String domain = getResources().getString(R.string.domain);
-//        this.domain = domain;
-//        return domain;
-//    }
-
     private WebView createWebView() {
         /* 2. ja 3. argumentti ?? */
         final AdvancedWebView webView = new AdvancedWebView(this);
@@ -295,7 +234,7 @@ public class MainActivity extends AppCompatActivity
         focusedWebView.setVisibility(View.INVISIBLE);
         webView.setVisibility(View.VISIBLE);
         setFocusedWebView(webView);
-        setFocusedUrl(webView.getUrl());
+//        setFocusedUrl(webView.getUrl());
     }
 
     protected void switchToLatestWebViewTab() {
@@ -337,17 +276,10 @@ public class MainActivity extends AppCompatActivity
 
             Log.i(TAG, "mWebView handleMessage, externalUrl:" + externalUrl);
 
-            ((MainActivity) this.webView.getContext()).setFocusedUrl(url);
+//            ((MainActivity) this.webView.getContext()).setFocusedUrl(url);
             ((MainActivity) this.webView.getContext()).openContextMenu(this.webView);
         }
     }
-
-    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            Log.i(TAG, "at handleOnBackPressed");
-        }
-    };
 
     public int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -389,6 +321,7 @@ public class MainActivity extends AppCompatActivity
         recyclerViewAdapter.setColumnCount(tabGridColumnCount);
         recyclerView.setLayoutManager(new GridLayoutManager(this, tabGridColumnCount));
         recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter.setOnCloseTabCallback(this::onTabClosed);
 
 
         webviewContainer = findViewById(R.id.webview_container);
@@ -408,8 +341,6 @@ public class MainActivity extends AppCompatActivity
 
         setExternalUrlExtractPattern(url);
 
-//        fillPermittedHostnames(getResources().getStringArray(R.array.permitted_hostnames));
-//        introducePermittedHostnames();
         firewall = new Firewall(this);
 
         setSupportActionBar(myToolbar);
@@ -434,13 +365,21 @@ public class MainActivity extends AppCompatActivity
         webviewContainer.addView(webView);
         setFocusedWebView(webView);
 
+        buttonTabs = ((AppCompatButton) findViewById(R.id.buttonTabs));
+        buttonTabs.setText(Integer.toString(webViews.size()));
+        buttonTabs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleTabs(!showingTabs);
+            }
+        });
+
         ((AdvancedWebView) webView).setListener(this, webViewCollector);
 
         mobileUserAgent = webView.getSettings().getUserAgentString();
         Log.i(TAG, "mobileUserAgent: "+ mobileUserAgent);
         settingPreferencesKey = getApplicationName(getApplicationContext()) + "_settings";
 
-        Log.i(TAG, "collectSettings().size(): "+ collectSettings().size());
         if (collectSettings().size() == 0) {
             initializeSettings();
         }
@@ -450,81 +389,24 @@ public class MainActivity extends AppCompatActivity
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefresh.setRefreshing(true);
+//                swipeRefresh.setRefreshing(true);
                 try {
-                    final WebView webView = (WebView) getWebView();
+                    final WebView webView = getWebView();
                     webView.reload();
                 } catch (Exception e) {
-                    Log.i(TAG, "vituixmän"); // TODO change this text..
+                    Log.i(TAG, "epic fail");
                 }
-                swipeRefresh.setRefreshing(false);
+//                swipeRefresh.setRefreshing(false);
             }
         });
+        swipeRefresh.setDistanceToTriggerSync(100);
 
-        /* TODO yritä tehdä tästä oma luokka, jonka annat jokaiselle luodulle WebView'lle .. pitäs korjata bugin että URL ei päivity subtitleen. */
-//        webView.setWebViewClient(new WebViewClient() {
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                /* if the hostname may not be accessed */
-//                if (!firewall.isHostnameAllowed(url)) {
-//                    /* if a listener is available */
-//                    if (self != null) {
-//                        /* inform the listener about the request */
-//                        ((AdvancedWebView.Listener) self).onExternalPageRequest(url);
-//                    }
-//
-//                    /* cancel the original request */
-//                    return true;
-//                }
-//
-////            /* if there is a user-specified handler available */
-////            if (mCustomWebViewClient != null) {
-////                // if the user-specified handler asks to override the request
-////                if (mCustomWebViewClient.shouldOverrideUrlLoading(view, url)) {
-////                    // cancel the original request
-////                    return true;
-////                }
-////            }
-//
-//                Log.i(TAG, "got url: "+ url);
-//
-//                // cancel the original request with true
-//                return false;
-//            }
-//
-//            @Override
-//            public void onPageFinished(WebView view, String url) {
-//                super.onPageFinished(view, url);
-//                ((MainActivity) self).setToolbarTitle(view.getTitle());
-//                ((MainActivity) self).setToolbarSubtitle(url);
-//
-//                final boolean canGoBack = view.canGoBack();
-//                final boolean canGoForward = view.canGoForward();
-//                buttonBack.setEnabled(canGoBack);
-//                buttonForward.setEnabled(canGoForward);
-//            }
-//        });
         myWebViewClient = new MyWebViewClient(this, this.firewall);
         webView.setWebViewClient(myWebViewClient);
 
-//        try {
-//            for (String h : mPermittedHostnames) {
-//                ((AdvancedWebView) webView).addPermittedHostname(h);
-//            }
-//        } catch (Exception e) {
-//            //
-//        }
-//        webView.getSettings().setJavaScriptEnabled(true);
-//        webView.getSettings().setBuiltInZoomControls(false);
-//        webView.getSettings().setSupportZoom(false);
-//        webView.getSettings().setLoadWithOverviewMode(true);
-//        webView.getSettings().setUseWideViewPort(false);
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         webView.loadUrl(url.toString());
-
-//        if (mWebView instanceof View) {
-            registerForContextMenu(webView);
-//        }
+        registerForContextMenu(webView);
 
         webView.setLongClickable(true);
         webView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -539,20 +421,10 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Log.i(TAG, "getLoadWithOverviewMode "+ webView.getSettings().getLoadWithOverviewMode());
-        Log.i(TAG, "getUseWideViewPort "+ webView.getSettings().getUseWideViewPort());
-        Log.i(TAG, "getBuiltInZoomControls "+ webView.getSettings().getBuiltInZoomControls());
-        Log.i(TAG, "getDisplayZoomControls "+ webView.getSettings().getDisplayZoomControls());
-
-//        "getLoadWithOverviewMode " false
-//        "getUseWideViewPort " false
-//        "getBuiltInZoomControls " false
-//        "getDisplayZoomControls " true
-
-//        webView.getSettings().setLoadWithOverviewMode(enabled);   => true
-//        webView.getSettings().setUseWideViewPort(enabled);        => true
-//        webView.getSettings().setBuiltInZoomControls(enabled);    => true
-//        webView.getSettings().setDisplayZoomControls(! enabled);  => false
+//        Log.i(TAG, "getLoadWithOverviewMode "+ webView.getSettings().getLoadWithOverviewMode());
+//        Log.i(TAG, "getUseWideViewPort "+ webView.getSettings().getUseWideViewPort());
+//        Log.i(TAG, "getBuiltInZoomControls "+ webView.getSettings().getBuiltInZoomControls());
+//        Log.i(TAG, "getDisplayZoomControls "+ webView.getSettings().getDisplayZoomControls());
 
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
@@ -616,28 +488,6 @@ public class MainActivity extends AppCompatActivity
         return getApplicationContext().getSharedPreferences(settingPreferencesKey, Context.MODE_PRIVATE).getAll();
     }
 
-    private Bundle prepareSettings(Map settings) {
-        final Bundle settingsBundle = new Bundle();
-
-        final Iterator<String> it = settings.keySet().iterator();
-        String key = null;
-
-        while (it.hasNext()) {
-            key = it.next();
-            try {
-                settingsBundle.putString(key, (String) settings.get(key));
-            }
-            catch (ClassCastException e) {
-                /* ignore */
-            }
-            catch (Exception e) {
-                Log.d(TAG, e.getMessage());
-            }
-        }
-
-        return settingsBundle;
-    }
-
     public Bundle prepareSettings() {
         final Map settings = collectSettings();
         final Bundle settingsBundle = new Bundle();
@@ -683,9 +533,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_show_tabs:
-                toggleTabs(!showingTabs);
-                return true;
             case R.id.action_refresh:
                 getWebView().reload();
                 return true;
@@ -746,7 +593,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Intent createShareIntent() {
-//        final String url = getFocusedUrl() != null ? getFocusedUrl() : focusedWebView.getUrl();
         final String url = focusedWebView.getUrl();
         final Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
@@ -762,10 +608,10 @@ public class MainActivity extends AppCompatActivity
         webView = createWebView();
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         webView.setWebViewClient(myWebViewClient);
-//        webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);
 
         webViews.add(webView);
+        buttonTabs.setText(Integer.toString(webViews.size()));
         position = webViews.size() - 1;
 
         webViewCollector = new WebViewCollector(webView);
@@ -778,8 +624,9 @@ public class MainActivity extends AppCompatActivity
             switchToWebView(webViews.get(itemPosition));
             Log.i(TAG, "setting title");
             setToolbarTitle(webViewCollectors.get(itemPosition).getTitle());
-            /* TODO NPE from somewhere here? */
+
             Log.i(TAG, "setting subtitle");
+            /* TODO catch NPE from somewhere here */
             setToolbarSubtitle(webViewCollectors.get(itemPosition).getUrl().toString());
             toggleTabs(false);
         });
@@ -861,20 +708,6 @@ public class MainActivity extends AppCompatActivity
         super.onBackPressed();
     }
 
-//    @Override
-//    public void onPageStarted(String url, Bitmap favicon) {
-//        // pass url to WebViewCollector
-//    }
-
-//    @Override
-//    public void onPageError(int errorCode, String description, String failingUrl) {
-//        Log.i(TAG, "MainActivity.onPageError(): "+ String.valueOf(errorCode));
-//        Log.i(TAG, "MainActivity.onPageError(): "+ description);
-//    }
-//
-//    @Override
-//    public void onDownloadRequested(String url, String suggestedFilename, String mimeType, long contentLength, String contentDisposition, String userAgent) { }
-
     public void onPageFinished(final WebView webView, final String url) {
         self.setToolbarTitle(webView.getTitle());
         self.setToolbarSubtitle(url);
@@ -889,7 +722,6 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(self, R.string.link_contains_an_unallowed_url, Toast.LENGTH_SHORT).show();
     }
 
-//    @Override
     public void onExternalPageRequest(String url) {
         Log.i(TAG, "at onExternalPageRequest, url: "+ url);
         if (! firewall.isHostnameAllowed(url)) {
@@ -897,25 +729,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//        /* if the hostname may not be accessed */
-//        if (! firewall.isHostnameAllowed(url)) {
-//            /* cancel the original request */
-//            return true;
-//        }
-//
-////            /* if there is a user-specified handler available */
-////            if (mCustomWebViewClient != null) {
-////                // if the user-specified handler asks to override the request
-////                if (mCustomWebViewClient.shouldOverrideUrlLoading(view, url)) {
-////                    // cancel the original request
-////                    return true;
-////                }
-////            }
-//
-//        Log.i(TAG, "got url: "+ url);
-//
-//        // cancel the original request with true
-//        return false;
-//    }
+    static void removeItemFromCollection(Collection col, Integer position) {
+        final Iterator it = col.iterator();
+        Integer p = -1;
+
+        do {
+            it.next();
+            ++ p;
+        } while (p < position);
+
+        it.remove();
+    }
+
+    public void onTabClosed(final Integer position) {
+        removeItemFromCollection(webViews, position);
+        buttonTabs.setText(Integer.toString(webViews.size()));
+    }
 }

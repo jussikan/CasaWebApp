@@ -15,9 +15,7 @@ public class CaptureScreenshotRunnable implements Runnable {
     public void run() {
         final Bitmap cachedBitmap;
         final Canvas cachedCanvas;
-        final BitmapDrawable screenshot;
         final WebView webView;
-        final boolean wasDrawingCacheEnabled;
 
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         screenshotTask.setThread(Thread.currentThread());
@@ -25,8 +23,7 @@ public class CaptureScreenshotRunnable implements Runnable {
         screenshotTask.handleCaptureState(ScreenshotManager.STATE_CAPTURE_STARTED);
 
         webView = screenshotTask.getWebView();
-        /* TODO kokeilepa laittaa WebView'tä alustaessa pois päältä, vaikuttaako suoritukseen tai tehoon */
-        /* TODO setDrawingCacheEnabled is deprecated in API 11 */
+        /* NOTE setDrawingCacheEnabled is deprecated in API 11 */
 //        wasDrawingCacheEnabled = webView.isDrawingCacheEnabled();
 //        webView.setDrawingCacheEnabled(true);
 //        cachedBitmap = Bitmap.createBitmap(webView.getDrawingCache());
@@ -42,20 +39,11 @@ public class CaptureScreenshotRunnable implements Runnable {
                 webView.draw(cachedCanvas);
 
                 final BitmapDrawable screenshot = new BitmapDrawable(webView.getResources(), cachedBitmap);
-//        cachedBitmap.recycle(); // ei vissii kannata
 
                 screenshotTask.setOriginalImage(screenshot);
 
                 screenshotTask.handleCaptureState(ScreenshotManager.STATE_CAPTURE_COMPLETE);
             }
         });
-//        webView.draw(cachedCanvas);
-
-//        screenshot = new BitmapDrawable(webView.getResources(), cachedBitmap);
-////        cachedBitmap.recycle(); // ei vissii kannata
-//
-//        screenshotTask.setOriginalImage(screenshot);
-//
-//        screenshotTask.handleCaptureState(ScreenshotManager.STATE_CAPTURE_COMPLETE);
     }
 }

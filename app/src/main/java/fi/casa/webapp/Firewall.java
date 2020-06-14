@@ -4,12 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.List;
-
-import static fi.casa.webapp.MainActivity.TAG;
 
 public class Firewall {
     private Context context = null;

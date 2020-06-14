@@ -1,9 +1,6 @@
 package fi.casa.webapp;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +11,10 @@ import android.widget.EditText;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by jussi on 09/12/2017.
@@ -62,10 +63,7 @@ public class SettingsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        final Bundle settings =
-//            getArguments()
-            ((MainActivity) getActivity()).prepareSettings()
-        ;
+        final Bundle settings = ((MainActivity) getActivity()).prepareSettings();
         defaultSettings = ((MainActivity) getActivity()).getDefaultSettings();
         placeSettingsValues(settings);
     }
